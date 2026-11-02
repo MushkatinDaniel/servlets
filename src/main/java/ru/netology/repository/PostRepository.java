@@ -2,6 +2,7 @@ package ru.netology.repository;
 
 import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
+import org.springframework.stereotype.Repository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
  * Посты лежат в {@link ConcurrentHashMap}, новые id выдаёт {@link AtomicLong}:
  * два потока никогда не получат один и тот же id.
  */
+@Repository
 public class PostRepository {
   private static final long NEW_POST_ID = 0;
 

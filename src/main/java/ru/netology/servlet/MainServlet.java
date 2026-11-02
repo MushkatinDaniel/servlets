@@ -1,9 +1,8 @@
 package ru.netology.servlet;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.netology.controller.PostController;
 import ru.netology.exception.NotFoundException;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,13 +16,22 @@ public class MainServlet extends HttpServlet {
   private static final String POSTS_PATH = "/api/posts";
   private static final String POST_BY_ID_REGEX = POSTS_PATH + "/\\d+";
 
+  private static final String BASE_PACKAGE = "ru.netology";
+
+  private AnnotationConfigApplicationContext context;
   private PostController controller;
 
   @Override
   public void init() {
-    final var repository = new PostRepository();
-    final var service = new PostService(repository);
-    controller = new PostController(service);
+    // Spring сканирует пакет, находит классы с @Repository, @Service, @Controller
+    // и сам связывает их через конструкторы
+    context = new AnnotationConfigApplicationContext(BASE_PACKAGE);
+    controller = context.getBean(PostController.class);
+  }
+
+  @Override
+  public void destroy() {
+    context.close();
   }
 
   @Override
